@@ -18,10 +18,11 @@ namespace FrontierDevelopments.Shields.Harmony
 
         protected static bool ShieldBlocks(Thing caster, Verb verb, IntVec3 source, LocalTargetInfo target)
         {
+            if (caster.Faction == null) return false;
             if (!Mod.Settings.EnableAIVerbFindShotLine) return false;
             if (!verb.verbProps.requireLineOfSight) return false;
             if (UncheckedTypes.Exists(a => a.IsInstanceOfType(verb))) return false;
-
+            
             var friendlyShieldBlocks = new FieldQuery(caster.Map)
                 .IsActive()
                 .FriendlyTo(caster.Faction)
