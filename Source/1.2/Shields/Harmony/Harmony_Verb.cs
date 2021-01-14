@@ -4,6 +4,7 @@ using System.Linq;
 using FrontierDevelopments.General;
 using HarmonyLib;
 using Verse;
+using RimWorld;
 
 namespace FrontierDevelopments.Shields.Harmony
 {
@@ -18,6 +19,7 @@ namespace FrontierDevelopments.Shields.Harmony
 
         protected static bool ShieldBlocks(Thing caster, Verb verb, IntVec3 source, LocalTargetInfo target)
         {
+            if (verb.GetType() == typeof(Verb_CastPsycast)) return false;
             if (!Mod.Settings.EnableAIVerbFindShotLine) return false;
             if (!verb.verbProps.requireLineOfSight) return false;
             if (UncheckedTypes.Exists(a => a.IsInstanceOfType(verb))) return false;
