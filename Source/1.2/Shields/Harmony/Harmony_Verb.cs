@@ -22,7 +22,19 @@ namespace FrontierDevelopments.Shields.Harmony
             if (!verb.verbProps.requireLineOfSight) return false;
             if (UncheckedTypes.Exists(a => a.IsInstanceOfType(verb))) return false;
 
-            var friendlyShieldBlocks = new FieldQuery(caster.Map)
+            if (caster.Faction == null)                                              //additional check for casters without faction
+            {
+                return new FieldQuery(caster.Map)
+                .IsActive()
+                .Intersects(
+                    PositionUtility.ToVector3(source),
+                    PositionUtility.ToVector3(target.Cell))
+                .Get()
+                .Any();
+            }
+            else
+            {
+                return new FieldQuery(caster.Map)
                 .IsActive()
                 .FriendlyTo(caster.Faction)
                 .Intersects(
@@ -30,7 +42,7 @@ namespace FrontierDevelopments.Shields.Harmony
                     PositionUtility.ToVector3(target.Cell))
                 .Get()
                 .Any();
-            return friendlyShieldBlocks;
+            }
         }
 
         [HarmonyPatch(typeof(Verb), nameof(Verb.TryFindShootLineFromTo))]
